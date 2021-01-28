@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using NUnit.Framework;
 using UnityEngine;
 
 public class Hacker : MonoBehaviour
@@ -33,6 +34,35 @@ public class Hacker : MonoBehaviour
         else if (currentScreen == Screen.MainMenu)
         {
             RunMainMenu(input);
+        } else if (currentScreen == Screen.Password)
+        {
+            RunPasswordGuessScreen(input);
+        }
+    }
+
+    private void RunPasswordGuessScreen(string input)
+    {
+        if (level == 1)
+        {
+            if (input == "books")
+            {
+                Terminal.WriteLine("You now have access to the local library");
+            }
+            else
+            {
+                Terminal.WriteLine("Access Denied");
+            }
+        }
+        else if (level == 2)
+        {
+            if (input == "technology")
+            {
+                Terminal.WriteLine("You now have access to an Apple server");
+            }
+            else
+            {
+                Terminal.WriteLine("Access Denied");
+            }
         }
     }
 
