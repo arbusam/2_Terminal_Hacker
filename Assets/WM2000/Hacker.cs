@@ -1,13 +1,16 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using NUnit.Framework;
 using UnityEngine;
 
 public class Hacker : MonoBehaviour
 {
 
     int level;
+    string password;
+
+    string[][] passwords = { new string[] { "books", "aisle", "shelf", "password", "font", "borrow" }, new string[] { "technology", "laptop", "virtual", "smartphone", "application", "smartwatch" } };
+
+    string[] levels = { "the local library", "an Apple server" };
+
+    int hints = 3;
 
     enum Screen { MainMenu, Password, Win};
     Screen currentScreen;
@@ -40,43 +43,70 @@ public class Hacker : MonoBehaviour
         }
     }
 
-    private void RunPasswordGuessScreen(string input)
+    void RunPasswordGuessScreen(string input)
     {
-        if (level == 1)
+        if (input == password)
         {
-            if (input == "books")
+            ShowLevelReward();
+        }
+        else if (input == "hint")
+        {
+            if (hints != 0) {
+                hints -= 1;
+                Terminal.WriteLine("Hint: " + password.Anagram() + ". You have " + hints + " hints left");
+            } else
             {
-                Terminal.WriteLine("You now have access to the local library");
-            }
-            else
-            {
-                Terminal.WriteLine("Access Denied");
+                Terminal.WriteLine("You have no hints left");
             }
         }
-        else if (level == 2)
+        else
         {
-            if (input == "technology")
-            {
-                Terminal.WriteLine("You now have access to an Apple server");
-            }
-            else
-            {
-                Terminal.WriteLine("Access Denied");
-            }
+            Terminal.WriteLine("Access Denied");
+        }
+    }
+
+    private void ShowLevelReward()
+    {
+        switch(level)
+        {
+            case 1:
+                Terminal.WriteLine("You now have access to " + levels[level-1]);
+
+                Terminal.WriteLine(@"
+    _______
+   /      /,
+  /      //
+ /______//
+(______(/
+          
+"
+                );
+
+                break;
+            case 2:
+                Terminal.WriteLine("You now have access to " + levels[level-1] + @"
+         .:'
+      __ :'__
+   .'`__`-'__``.
+  :__________.-'
+  :_________:
+   :_________`-;
+    `.__.-.__.'
+                ");
+
+                break;
+
         }
     }
 
     void RunMainMenu(string input)
     {
-        if (input == "1")
+
+        bool isValidLevelNumber = (input == "1" || input == "2");
+        if (isValidLevelNumber)
         {
-            level = 1;
-            StartGame();
-        }
-        else if (input == "2")
-        {
-            level = 2;
-            StartGame();
+            level = int.Parse(input);
+            AskForPassword();
         }
         else if (input == "Hack100")
         {
@@ -88,16 +118,40 @@ public class Hacker : MonoBehaviour
         }
     }
 
-    void StartGame()
+    void AskForPassword()
     {
+        hints = 3;
+        int index;
         currentScreen = Screen.Password;
-        Terminal.WriteLine("You have chosen level " + level);
-        Terminal.WriteLine("Please enter your password:");
+        Terminal.ClearScreen();
+        index = SetRandomPassword();
+        Terminal.WriteLine("Enter your password:");
+    }
+
+    int SetRandomPassword()
+    {
+        int index;
+        switch (level)
+        {
+            case 1:
+                index = Random.Range(0, passwords[0].Length);
+                password = passwords[0][index];
+                break;
+            case 2:
+                index = Random.Range(0, passwords[1].Length);
+                password = passwords[1][index];
+                break;
+            default:
+                Debug.LogError("Invalid Level Number");
+                break;
+        }
+
+        return index;
     }
 
 
     // Update is called once per frame
     void Update() {
-        
+
     }
 }
