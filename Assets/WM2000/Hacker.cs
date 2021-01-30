@@ -5,10 +5,10 @@ public class Hacker : MonoBehaviour
 
     int level;
     string password;
+    const string menuHint = "You may type menu at anytime";
 
-    string[][] passwords = { new string[] { "books", "aisle", "shelf", "password", "font", "borrow" }, new string[] { "technology", "laptop", "virtual", "smartphone", "application", "smartwatch" } };
-
-    string[] levels = { "the local library", "an Apple server" };
+    string[][] passwords = { new string[] { "books", "aisle", "self", "password", "font", "borrow" }, new string[] { "technology", "laptop", "virtual", "smartphone", "application", "smartwatch" }, new string[] { "starfield", "telescope", "environment", "exploration", "astronauts" } };
+    readonly string[] levels = { "the local library", "an Apple server", "NASA" };
 
     int hints = 3;
 
@@ -27,6 +27,7 @@ public class Hacker : MonoBehaviour
         Terminal.WriteLine("");
         Terminal.WriteLine("Press 1 for the local library");
         Terminal.WriteLine("Press 2 for an Apple server");
+        Terminal.WriteLine("Press 3 for NASA");
     }
 
     void OnUserInput(string input) {
@@ -95,6 +96,14 @@ public class Hacker : MonoBehaviour
                 ");
 
                 break;
+            case 3:
+                Terminal.WriteLine("You now have access to " + levels[level - 1] + @"
+ _ __   __ _ ___  __ _ 
+| '_ \ / _` / __|/ _` |
+| | | | (_| \__ \ (_| |
+|_| |_|\__,_|___/\__,_|
+                ");
+                break;
 
         }
     }
@@ -102,7 +111,7 @@ public class Hacker : MonoBehaviour
     void RunMainMenu(string input)
     {
 
-        bool isValidLevelNumber = (input == "1" || input == "2");
+        bool isValidLevelNumber = (input == "1" || input == "2" || input == "3");
         if (isValidLevelNumber)
         {
             level = int.Parse(input);
@@ -115,6 +124,7 @@ public class Hacker : MonoBehaviour
         else
         {
             Terminal.WriteLine("Please enter a valid selection");
+            Terminal.WriteLine(menuHint);
         }
     }
 
@@ -124,29 +134,12 @@ public class Hacker : MonoBehaviour
         int index;
         currentScreen = Screen.Password;
         Terminal.ClearScreen();
-        index = SetRandomPassword();
+
+        index = Random.Range(0, passwords[level-1].Length);
+        password = passwords[level-1][index];
+
         Terminal.WriteLine("Enter your password:");
-    }
-
-    int SetRandomPassword()
-    {
-        int index;
-        switch (level)
-        {
-            case 1:
-                index = Random.Range(0, passwords[0].Length);
-                password = passwords[0][index];
-                break;
-            case 2:
-                index = Random.Range(0, passwords[1].Length);
-                password = passwords[1][index];
-                break;
-            default:
-                Debug.LogError("Invalid Level Number");
-                break;
-        }
-
-        return index;
+        Terminal.WriteLine(menuHint);
     }
 
 
